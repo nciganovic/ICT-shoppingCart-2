@@ -1,4 +1,6 @@
 $(document).ready(function(){
+    localStorage.removeItem("shopCart");
+
     console.log("Cart.js");
     var allProducts;
     var row = 0;
@@ -44,29 +46,30 @@ $(document).ready(function(){
         
         $("#products").append(html);
 
+        /* Save data in local storage */
+        var obj = {
+            row: row,
+            id: 0,
+            quantity: 1
+        }
 
-        /* On selecting specific product */
-        $(".drop-down-products").change(function(){
-            var id = $(this).find(":selected").val();
-            var row = $(this).attr("data");
-            var quantity = $(`.q-${row}`).val();
+        console.log(obj);
 
-            var price = GetPriceOfId(id, quantity, allProducts);
-            $(`.price-${row}`).text(price);
-        });
+        if(localStorage.getItem("shopCart")){
+            var listOfProduct = JSON.parse(localStorage.getItem("shopCart"));
+            listOfProduct.push(obj);
+            localStorage.setItem("shopCart", JSON.stringify(listOfProduct));
+        }
+        else{
+            console.log("Creating first item...");
+            var arr = [];
+            arr.push(obj);
+            localStorage.setItem("shopCart", JSON.stringify(arr));
+        }
 
-        /* On selecting quantity of product */
-        $(".quantity").change(function(){
-            var row = $(this).attr("data");
-            var id = $(`.dd-${row}`).find(":selected").val();
-            var quantity = $(this).val();
-            console.log(id, quantity);
-            var price = GetPriceOfId(id, quantity, allProducts);
-            console.log(price);
-            $(`.price-${row}`).text(price);
-        });
+        events(allProducts);
 
-
+        console.log(JSON.parse(localStorage.getItem("shopCart")));
     });
 });
 
@@ -84,4 +87,111 @@ function GetPriceOfId(id, quantity, allProducts){
         }
     }
     return price;
+}
+
+function EditLocalStorage(row, id, quantity){
+    var getItems = JSON.parse(localStorage.getItem("shopCart"));
+    for(l of getItems){
+        if(l.row == row){
+            console.log("Changing data!");
+            l.id = id;
+            l.quantity = quantity;
+            break;
+        }
+        
+    }
+
+    localStorage.setItem("shopCart", JSON.stringify(getItems));
+}
+
+function RemoveItemFromStorage(row, allProducts){
+    var getItems = JSON.parse(localStorage.getItem("shopCart"));
+    var newListofItems = [];
+    for(l of getItems){
+        if(l.row != row){
+            newListofItems.push(l);
+        }
+    }
+    localStorage.setItem("shopCart", JSON.stringify(newListofItems));
+    
+    RefreshListOfItems(newListofItems, allProducts);
+}
+
+function RefreshListOfItems(list, allProducts){
+
+    /* Show data */
+    var html = "";
+    for(l of list){
+        html += `<tr>`;
+        html += "<td>";
+        html += `<select class='drop-down-products w-100 dd-${l.row}' data='${l.row}'  name='products'>`;
+        html += "<option value='0'>Choose product</option>"
+
+        for(p of allProducts){
+            if(l.id == p.id){
+                html += `<option selected="selected" value='${p.id}'>${p.name}</option>`;
+            }
+            else{
+                html += `<option value='${p.id}'>${p.name}</option>`;
+            }
+        }
+        html += "</select>";
+        html += "</td>";
+        html += `<td><input class='w-100 q-${l.row} quantity' data='${l.row}' type='number' min='1' max='20' value='${l.quantity}'></td>`;
+        html += `<td class='price-${l.row} text-center'>`;  
+        
+        var totalPrice;
+        for(p of allProducts){
+            if(l.id == p.id){
+                if(l.quantity < 10){
+                    totalPrice = l.quantity * p.priceUnderTen;
+                }
+                else{
+                    totalPrice = l.quantity * p.priceAboveTen;
+                }
+                html += totalPrice;
+                break;
+            }
+        }
+
+        html += `</td>`;
+        html += `<td> <button class='btn btn-danger m-3' data='${l.row}'> Remove </button> </td>`;
+        html += "</tr>";
+    }
+    $("#products").html(html);
+
+    events(allProducts);
+}
+
+function events(allProducts){
+    /* On selecting specific product */
+    $(".drop-down-products").change(function(){
+        var id = $(this).find(":selected").val();
+        var row = $(this).attr("data");
+        var quantity = $(`.q-${row}`).val();
+
+        var price = GetPriceOfId(id, quantity, allProducts);
+        $(`.price-${row}`).text(price);
+
+        /* Edit local storage */
+        EditLocalStorage(row, id, quantity);
+    });
+
+    /* On selecting quantity of product */
+    $(".quantity").change(function(){
+        var row = $(this).attr("data");
+        var id = $(`.dd-${row}`).find(":selected").val();
+        var quantity = $(this).val();
+
+        var price = GetPriceOfId(id, quantity, allProducts);
+        $(`.price-${row}`).text(price);
+
+        /* Edit local storage */
+        EditLocalStorage(row, id, quantity);
+    });
+
+    $(".btn-danger").click(function(){
+        var row = $(this).attr("data");
+        RemoveItemFromStorage(row, allProducts);
+    });
 }
