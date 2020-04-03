@@ -1,0 +1,62 @@
+[
+    {
+        "id":"1",
+        "name": "Product1",
+        "priceUnderTen": "1",
+        "priceAboveTen": "10"
+    },
+    {
+        "id":"2",
+        "name": "Product2",
+        "priceUnderTen": "2",
+        "priceAboveTen": "20"
+    },
+    {
+        "id":"3",
+        "name": "Product3",
+        "priceUnderTen": "3",
+        "priceAboveTen": "30"
+    },
+    {
+        "id":"4",
+        "name": "Product4",
+        "priceUnderTen": "4",
+        "priceAboveTen": "40"
+    },
+    {
+        "id":"5",
+        "name": "Product5",
+        "priceUnderTen": "5",
+        "priceAboveTen": "50"
+    },
+    {
+        "id":"6",
+        "name": "Product6",
+        "priceUnderTen": "6",
+        "priceAboveTen": "60"
+    },
+    {
+        "id":"7",
+        "name": "Product7",
+        "priceUnderTen": "7",
+        "priceAboveTen": "70"
+    },
+    {
+        "id":"8",
+        "name": "Product8",
+        "priceUnderTen": "8",
+        "priceAboveTen": "80"
+    },
+    {
+        "id":"9",
+        "name": "Product9",
+        "priceUnderTen": "9",
+        "priceAboveTen": "90"
+    },
+    {
+        "id":"10",
+        "name": "Product10",
+        "priceUnderTen": "10",
+        "priceAboveTen": "100"
+    }
+]

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center mt-3">Shopping cart</h1>
+            </div>
+            <div class="col-12 d-flex mt-5">
+                <button class="btn btn-success m-auto btn-add">Add new product</button>
+            </div>
+            <div class="col-12 d-flex mt-5">
+                <table class="m-auto" border="1px">
+                    <thead>
+                        <tr>
+                            <th class="pl-5 pr-5 pt-3 pb-3">Product</th>
+                            <th class="pl-5 pr-5 pt-3 pb-3">Quantity</th>
+                            <th class="pl-5 pr-5 pt-3 pb-3">Total Price</th>
+                            <th class="pl-5 pr-5 pt-3 pb-3"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="products">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="cart.js"></script>
+</body>
+</html>
