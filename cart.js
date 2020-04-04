@@ -53,7 +53,7 @@ $(document).ready(function(){
 
         html += `<td><input class='w-100 q-${row} quantity' data='${row}' type='number' min='1' max='20' value='1'></td>`;
 
-        html += `<td class='price-${row} text-center'>  </td>`;
+        html += `<td class='price price-${row} text-center'>  </td>`;
 
         html += `<td> <button class='btn btn-danger m-3' data='${row}'> Remove </button> </td>`;
 
@@ -86,6 +86,72 @@ $(document).ready(function(){
 
         console.log(JSON.parse(localStorage.getItem("shopCart")));
     });
+
+    $(".btn-submit").click(function(){
+        if(localStorage.getItem("shopCart")){
+            var listOfProducts = JSON.parse(localStorage.getItem("shopCart"));
+            if(listOfProducts.length > 0){
+                var allProductIds = [];
+                var isValid = true;
+                $('.drop-down-products').each(function(i, obj) {
+                    if($(this).val() == 0){
+                        isValid = false;
+                    }
+                    allProductIds.push($(this).val()); //stop if some product id is 0
+                });
+
+                var allQuantities = [];
+                $('.quantity').each(function(i, obj) {
+                    allQuantities.push($(this).val());
+                });
+                
+                var allPrices = [];
+                $('.price').each(function(i, obj) {
+                    allPrices.push($(this).text());
+                });
+                
+                var dataToSend = [];
+                for(let i = 0; i < allProductIds.length; i++){
+                    var obj = {
+                        id: allProductIds[i],
+                        quantity: allQuantities[i],
+                        price: allPrices[i]
+                    }
+                    dataToSend.push(obj);
+                }
+                
+                if(isValid){
+                    $.ajax({
+                        url: "result.php",
+                        method: "get", //in real world this should be post method but this is just working example of frontend
+                        type:"json",
+                        data:{
+                            x: dataToSend
+                        },
+                        success: function(msg){
+                            alert("Successfull purchase!");
+                            localStorage.removeItem("shopCart");
+                            location.reload();
+                        },
+                        error: function(err){
+                            console.log(err);
+                        }
+                    });
+                }
+                else{
+                    alert("Some of your rows have unselected products.");
+                }
+                
+
+            }
+            else{
+                alert("Your cart is empty!");
+            }
+        }
+        else{
+            alert("Your cart is empty!");
+        }
+    })
 });
 
 function GetPriceOfId(id, quantity, allProducts){
@@ -162,7 +228,7 @@ function RefreshListOfItems(list, allProducts){
         html += "</select>";
         html += "</td>";
         html += `<td><input class='w-100 q-${l.row} quantity' data='${l.row}' type='number' min='1' max='20' value='${l.quantity}'></td>`;
-        html += `<td class='price-${l.row} text-center'>`;  
+        html += `<td class='price price-${l.row} text-center'>`;  
         
         var totalPrice;
         for(p of allProducts){
