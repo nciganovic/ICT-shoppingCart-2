@@ -30,7 +30,22 @@ $(document).ready(function(){
         html += "<option value='0'>Choose product</option>"
 
         for(p of allProducts){
-            html += `<option value='${p.id}'>${p.name}</option>`;
+            if(localStorage.getItem("shopCart")){
+                var listOfProducts = JSON.parse(localStorage.getItem("shopCart"));
+                var alredyInUse = false;
+                for(l of listOfProducts){
+                    if(p.id == l.id){
+                        alredyInUse = true;
+                        break;
+                    }
+                }
+                if(!alredyInUse){
+                    html += `<option value='${p.id}'>${p.name}</option>`;        
+                }
+            }
+            else{
+                html += `<option value='${p.id}'>${p.name}</option>`;
+            }
         }
 
         html += "</select>";
@@ -125,16 +140,25 @@ function RefreshListOfItems(list, allProducts){
         html += `<tr>`;
         html += "<td>";
         html += `<select class='drop-down-products w-100 dd-${l.row}' data='${l.row}'  name='products'>`;
-        html += "<option value='0'>Choose product</option>"
+        html += "<option value='0'>Choose product</option>";
 
         for(p of allProducts){
             if(l.id == p.id){
                 html += `<option selected="selected" value='${p.id}'>${p.name}</option>`;
             }
             else{
-                html += `<option value='${p.id}'>${p.name}</option>`;
+                var exists = false;
+                for(x of list){
+                    if(x.id == p.id){
+                        exists = true;
+                    }
+                }
+                if(!exists){
+                    html += `<option value='${p.id}'>${p.name}</option>`;
+                }
             }
         }
+
         html += "</select>";
         html += "</td>";
         html += `<td><input class='w-100 q-${l.row} quantity' data='${l.row}' type='number' min='1' max='20' value='${l.quantity}'></td>`;
@@ -175,6 +199,37 @@ function events(allProducts){
 
         /* Edit local storage */
         EditLocalStorage(row, id, quantity);
+
+        $('.drop-down-products').each(function(i, obj) {
+            //Select all elements that are not current one
+            if($(this).attr("data") != row){
+                var selectedID = $(this).find(":selected").val();
+                
+                //Remove all options that are alredy selected
+                var listOfProducts = JSON.parse(localStorage.getItem("shopCart"));
+
+                html = "<option value='0'>Choose product</option>";
+
+                for(ap of allProducts){
+                    var alredyInUse = false;
+                    for(l of listOfProducts){
+                        if(ap.id == l.id){
+                            alredyInUse = true;
+                            break;
+                        }
+                    }
+                    if(!alredyInUse){
+                        html += `<option value='${ap.id}'>${ap.name}</option>`;
+                        
+                    }
+                    if(ap.id == selectedID){
+                        html += `<option selected="selected" value='${ap.id}'>${ap.name}</option>`;
+                    } 
+                }
+            
+                $(this).html(html);
+            }
+        });
     });
 
     /* On selecting quantity of product */
